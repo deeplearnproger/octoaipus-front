@@ -225,7 +225,7 @@ const CardDeal: React.FC = () => {
       const formData = new FormData();
       formData.append("file", file);
       
-      const predictRes = await fetch("http://127.0.0.1:8000/predict", {
+      const predictRes = await fetch("https://octoaipus.onrender.com/predict", {
         method: "POST",
         body: formData,
       });
