@@ -115,8 +115,8 @@ const DIAGNOSIS_INFO: Record<string, { description: string; symptoms: string; re
 };
 
 //const BACKEND_URL = "https://pneumonia-backend-ai-a83d23c06fe9.herokuapp.com/predict"; // Heroku backend URL
-const HEATMAP_URL = "http://127.0.0.1:8000/heatmap";
-const BOXES_URL = "http://127.0.0.1:8000/boxes";
+const HEATMAP_URL = "https://octoaipus.onrender.com/heatmap";
+const BOXES_URL = "https://octoaipus.onrender.com/boxes";
 
   const isLikelyChestXray = async (file: File): Promise<boolean> => {
     try {
@@ -225,10 +225,15 @@ const CardDeal: React.FC = () => {
       const formData = new FormData();
       formData.append("file", file);
       
-      const predictRes = await fetch("http://18.156.158.53/predict", {
+      const predictRes = await fetch("https://octoaipus.onrender.com/predict", {
         method: "POST",
         body: formData,
       });
+      
+      if (!predictRes.ok) {
+        throw new Error(`HTTP error! status: ${predictRes.status} - ${predictRes.statusText}`);
+      }
+      
       const predictData = await predictRes.json();
       
       steps[2].progress = 70;
@@ -245,6 +250,11 @@ const CardDeal: React.FC = () => {
         method: "POST",
         body: formData,
       });
+      
+      if (!heatmapRes.ok) {
+        throw new Error(`Heatmap HTTP error! status: ${heatmapRes.status} - ${heatmapRes.statusText}`);
+      }
+      
       const heatmapBlob = await heatmapRes.blob();
       const heatmapUrl = URL.createObjectURL(heatmapBlob);
       
@@ -263,6 +273,11 @@ const CardDeal: React.FC = () => {
         method: "POST",
         body: formData,
       });
+      
+      if (!boxesRes.ok) {
+        throw new Error(`Boxes HTTP error! status: ${boxesRes.status} - ${boxesRes.statusText}`);
+      }
+      
       const boxesData = await boxesRes.json();
       
       steps[4].status = 'completed';
